@@ -1,0 +1,35 @@
+{
+  "vacacionesApp": {
+    "vacationRequest": {
+      "home": {
+        "title": "Vacaciones Requeridas",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Vacaciones Requeridas",
+        "createOrEditLabel": "Crear o editar Vacaciones Requeridas",
+        "notFound": "Ningún Vacaciones Requeridass encontrado"
+      },
+      "created": "Un nuevo Vacaciones Requeridas ha sido creado con el identificador {{ param }}",
+      "updated": "Un Vacaciones Requeridas ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Vacaciones Requeridas ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Vacaciones Requeridas {{ id }}?"
+      },
+      "detail": {
+        "title": "Vacaciones Requeridas"
+      },
+      "id": "ID",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha final",
+      "requestedDays": "Días solicitados",
+      "status": "Estado",
+      "approverComment": "Observaciones",
+      "approvedStartDate": "Fecha de inicio aprobada",
+      "approvedEndDate": "Fecha final aprobada",
+      "approvedDays": "Días aprobados",
+      "createdAt": "Fecha de creación",
+      "decidedAt": "Fecha de decisión",
+      "employee": "Empleado",
+      "approver": "Aprobador"
+    }
+  }
+}

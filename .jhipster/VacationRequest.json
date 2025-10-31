@@ -1,0 +1,77 @@
+{
+  "annotations": {
+    "changelogDate": "20251031132434"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "startDate",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "requestedDays",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "VacationStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PENDING,APPROVED,APPROVED_WITH_CHANGES,REJECTED"
+    },
+    {
+      "fieldName": "approverComment",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    },
+    {
+      "fieldName": "approvedStartDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "approvedEndDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "approvedDays",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "decidedAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "VacationRequest",
+  "relationships": [
+    {
+      "otherEntityName": "employee",
+      "relationshipName": "employee",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "approver",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

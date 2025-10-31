@@ -1,0 +1,27 @@
+{
+  "vacacionesApp": {
+    "employee": {
+      "home": {
+        "title": "Empleados",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Employee",
+        "createOrEditLabel": "Crear o editar Employee",
+        "notFound": "Ningún Employees encontrado"
+      },
+      "created": "Un nuevo Employee ha sido creado con el identificador {{ param }}",
+      "updated": "Un Employee ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Employee ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Employee {{ id }}?"
+      },
+      "detail": {
+        "title": "Empleados"
+      },
+      "id": "ID",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "startDate": "Fecha de Inicio",
+      "user": "Usuario"
+    }
+  }
+}

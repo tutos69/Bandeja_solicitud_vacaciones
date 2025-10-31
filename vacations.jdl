@@ -1,0 +1,41 @@
+enum VacationStatus {
+  PENDING,
+  APPROVED,
+  APPROVED_WITH_CHANGES,
+  REJECTED
+}
+
+entity Employee {
+  firstName String required
+  lastName  String required
+  startDate LocalDate required
+}
+
+entity VacationRequest {
+  startDate         LocalDate required
+  endDate           LocalDate required
+  requestedDays     Integer  required
+  status            VacationStatus required
+  approverComment   String maxlength(500)
+  approvedStartDate LocalDate
+  approvedEndDate   LocalDate
+  approvedDays      Integer
+  createdAt         Instant required
+  decidedAt         Instant
+}
+
+relationship OneToOne {
+  // User es entidad built-in de JHipster
+  Employee{user(login) required} to User with builtInEntity
+}
+
+relationship ManyToOne {
+  VacationRequest{employee required} to Employee
+}
+
+relationship ManyToOne {
+  VacationRequest{approver(login)} to User with builtInEntity
+}
+
+dto Employee, VacationRequest with mapstruct
+service Employee, VacationRequest with serviceClass

@@ -1,0 +1,88 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (vacationRequest(); as vacationRequestRef) {
+      <div>
+        <h2 data-cy="vacationRequestDetailsHeading">
+          <span jhiTranslate="vacacionesApp.vacationRequest.detail.title">Vacation Request</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.startDate">Start Date</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.startDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.endDate">End Date</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.endDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.requestedDays">Requested Days</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.requestedDays }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.status">Status</span></dt>
+          <dd>
+            <span [jhiTranslate]="'vacacionesApp.VacationStatus.' + (vacationRequestRef.status ?? 'null')">{{
+              { null: '', PENDING: 'PENDING', APPROVED: 'APPROVED', APPROVED_WITH_CHANGES: 'APPROVED_WITH_CHANGES', REJECTED: 'REJECTED' }[
+                vacationRequestRef.status ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.approverComment">Approver Comment</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.approverComment }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.approvedStartDate">Approved Start Date</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.approvedStartDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.approvedEndDate">Approved End Date</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.approvedEndDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.approvedDays">Approved Days</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.approvedDays }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.decidedAt">Decided At</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.decidedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.employee">Employee</span></dt>
+          <dd>
+            @if (vacationRequest()!.employee) {
+              <div>
+                <a [routerLink]="['/employee', vacationRequest()!.employee?.id, 'view']">{{ vacationRequestRef.employee?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="vacacionesApp.vacationRequest.approver">Approver</span></dt>
+          <dd>
+            <span>{{ vacationRequestRef.approver?.login }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/vacation-request', vacationRequestRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,9 @@
+export enum VacationStatus {
+  PENDING = 'PENDING',
+
+  APPROVED = 'APPROVED',
+
+  APPROVED_WITH_CHANGES = 'APPROVED_WITH_CHANGES',
+
+  REJECTED = 'REJECTED',
+}

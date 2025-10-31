@@ -1,0 +1,195 @@
+<div>
+  <h2 id="page-heading" data-cy="VacationRequestHeading">
+    <span jhiTranslate="vacacionesApp.vacationRequest.home.title">Vacation Requests</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="vacacionesApp.vacationRequest.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-vacation-request"
+        [routerLink]="['/vacation-request/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="vacacionesApp.vacationRequest.home.createLabel">Crear nuevo Vacation Request</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+  <jhi-alert />
+
+  @if (vacationRequests().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="vacacionesApp.vacationRequest.home.notFound">Ningún Vacation Requests encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="startDate">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.startDate">Start Date</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="endDate">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.endDate">End Date</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="requestedDays">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.requestedDays">Requested Days</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.status">Status</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="approverComment">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.approverComment">Approver Comment</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="approvedStartDate">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.approvedStartDate">Approved Start Date</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+
+            <!-- Columnas ocultas -->
+            <!--
+          <th scope="col" jhiSortBy="approvedEndDate">
+            <div class="d-flex">
+              <span jhiTranslate="vacacionesApp.vacationRequest.approvedEndDate">Approved End Date</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="approvedDays">
+            <div class="d-flex">
+              <span jhiTranslate="vacacionesApp.vacationRequest.approvedDays">Approved Days</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createdAt">
+            <div class="d-flex">
+              <span jhiTranslate="vacacionesApp.vacationRequest.createdAt">Created At</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="decidedAt">
+            <div class="d-flex">
+              <span jhiTranslate="vacacionesApp.vacationRequest.decidedAt">Decided At</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          -->
+
+            <th scope="col" jhiSortBy="employee.id">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.employee">Employee</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="approver.login">
+              <div class="d-flex">
+                <span jhiTranslate="vacacionesApp.vacationRequest.approver">Approver</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (vacationRequest of vacationRequests(); track trackId(vacationRequest)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/vacation-request', vacationRequest.id, 'view']">{{ vacationRequest.id }}</a>
+              </td>
+              <td>{{ vacationRequest.startDate | formatMediumDate }}</td>
+              <td>{{ vacationRequest.endDate | formatMediumDate }}</td>
+              <td>{{ vacationRequest.requestedDays }}</td>
+              <td [jhiTranslate]="'vacacionesApp.VacationStatus.' + (vacationRequest.status ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    PENDING: 'PENDING',
+                    APPROVED: 'APPROVED',
+                    APPROVED_WITH_CHANGES: 'APPROVED_WITH_CHANGES',
+                    REJECTED: 'REJECTED',
+                  }[vacationRequest.status ?? 'null']
+                }}
+              </td>
+              <td>{{ vacationRequest.approverComment }}</td>
+              <td>{{ vacationRequest.approvedStartDate | formatMediumDate }}</td>
+
+              <!-- Columnas ocultas en el cuerpo para que coincidan con el thead -->
+              <!--
+              <td>{{ vacationRequest.approvedEndDate | formatMediumDate }}</td>
+              <td>{{ vacationRequest.approvedDays }}</td>
+              <td>{{ vacationRequest.createdAt | formatMediumDatetime }}</td>
+              <td>{{ vacationRequest.decidedAt | formatMediumDatetime }}</td>
+              -->
+
+              <td>
+                @if (vacationRequest.employee) {
+                  <div>
+                    <a [routerLink]="['/employee', vacationRequest.employee.id, 'view']">{{ vacationRequest.employee.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                {{ vacationRequest.approver?.login }}
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/vacation-request', vacationRequest.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/vacation-request', vacationRequest.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(vacationRequest)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

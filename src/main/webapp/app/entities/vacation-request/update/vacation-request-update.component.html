@@ -1,0 +1,208 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-vacation-request-heading"
+        data-cy="VacationRequestCreateUpdateHeading"
+        jhiTranslate="vacacionesApp.vacationRequest.home.createOrEditLabel"
+      >
+        Crear o editar Solicitud de Vacaciones
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        <!-- Empleado -->
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="vacacionesApp.vacationRequest.employee">Empleado</label>
+          <select
+            class="form-control"
+            id="field_employee"
+            data-cy="employee"
+            name="employee"
+            formControlName="employee"
+            [compareWith]="compareEmployee"
+            (change)="onEmployeeChange()"
+          >
+            <option [ngValue]="null" selected></option>
+            @for (employeeOption of employeesSharedCollection; track $index) {
+              <option [ngValue]="employeeOption">{{ employeeOption.firstName }} {{ employeeOption.lastName }}</option>
+            }
+          </select>
+          @if (editForm.get(['employee'])!.invalid && (editForm.get(['employee'])!.dirty || editForm.get(['employee'])!.touched)) {
+            <div>
+              @if (editForm.get(['employee'])?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Fecha de Ingreso (solo lectura) -->
+        <div class="mb-3">
+          <label class="form-label">Fecha de Ingreso</label>
+          <input
+            type="text"
+            class="form-control"
+            [value]="employeeHireDate ? employeeHireDate.format('DD/MM/YYYY') : ''"
+            readonly
+            placeholder="Seleccione un empleado"
+          />
+        </div>
+
+        <!-- Años de Antigüedad (solo lectura) -->
+        <div class="mb-3">
+          <label class="form-label">Años de Antigüedad</label>
+          <input type="number" class="form-control" [value]="yearsOfSeniority" readonly placeholder="Se calcula automáticamente" />
+        </div>
+
+        <!-- Días Disponibles (solo lectura) -->
+        <div class="mb-3">
+          <label class="form-label">Días Disponibles</label>
+          <input type="number" class="form-control" [value]="availableDays" readonly placeholder="Se calcula automáticamente" />
+          @if (employeeHireDate && yearsOfSeniority < 1) {
+            <small class="form-text text-danger">⚠️ Debe tener al menos 1 año de antigüedad para solicitar vacaciones.</small>
+          }
+        </div>
+
+        <!-- Fecha de Inicio -->
+        @let startDateRef = editForm.get('startDate')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_startDate" jhiTranslate="vacacionesApp.vacationRequest.startDate">Fecha de Inicio</label>
+          <div class="input-group">
+            <input
+              id="field_startDate"
+              data-cy="startDate"
+              type="text"
+              class="form-control"
+              name="startDate"
+              ngbDatepicker
+              #startDateDp="ngbDatepicker"
+              formControlName="startDate"
+              (dateSelect)="onStartDateChange()"
+              [disabled]="availableDays === 0"
+            />
+            <button type="button" class="btn btn-secondary" (click)="startDateDp.toggle()" [disabled]="availableDays === 0">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+          @if (startDateRef.invalid && (startDateRef.dirty || startDateRef.touched)) {
+            <div>
+              @if (editForm.get('startDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Fecha de Fin -->
+        @let endDateRef = editForm.get('endDate')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_endDate" jhiTranslate="vacacionesApp.vacationRequest.endDate">Fecha de Fin</label>
+          <div class="input-group">
+            <input
+              id="field_endDate"
+              data-cy="endDate"
+              type="text"
+              class="form-control"
+              name="endDate"
+              ngbDatepicker
+              #endDateDp="ngbDatepicker"
+              formControlName="endDate"
+              (dateSelect)="onStartDateChange()"
+            />
+            <button type="button" class="btn btn-secondary" (click)="endDateDp.toggle()" [disabled]="availableDays === 0">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+          @if (endDateRef.invalid && (endDateRef.dirty || endDateRef.touched)) {
+            <div>
+              @if (editForm.get('endDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+          @if (endDateRef.errors?.exceedsAvailable) {
+            <small class="form-text text-danger">No puede solicitar más de {{ availableDays }} días disponibles.</small>
+          }
+        </div>
+
+        <!-- Días Solicitados (solo lectura) -->
+        @let requestedDaysRef = editForm.get('requestedDays')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_requestedDays">Días Solicitados</label>
+          <input
+            type="number"
+            class="form-control"
+            name="requestedDays"
+            id="field_requestedDays"
+            data-cy="requestedDays"
+            formControlName="requestedDays"
+            readonly
+            placeholder="Se calcula automáticamente"
+          />
+          @if (requestedDaysRef.invalid && (requestedDaysRef.dirty || requestedDaysRef.touched)) {
+            <div>
+              @if (editForm.get('requestedDays')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- SOLO ADMIN: Estado, Comentario del Aprobador y Aprobador -->
+        @if (isAdmin) {
+          <div class="mb-3">
+            <label class="form-label" for="field_status" jhiTranslate="vacacionesApp.vacationRequest.status">Estado</label>
+            <select class="form-control" id="field_status" data-cy="status" name="status" formControlName="status">
+              <option [ngValue]="null"></option>
+              @for (statusOption of vacationStatusValues; track $index) {
+                <option [ngValue]="statusOption">{{ statusOption }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="field_approverComment">Comentario del aprobador</label>
+            <textarea
+              class="form-control"
+              id="field_approverComment"
+              data-cy="approverComment"
+              name="approverComment"
+              rows="3"
+              formControlName="approverComment"
+              placeholder="Comentario del aprobador"
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="field_approver">Aprobador</label>
+            <select
+              class="form-control"
+              id="field_approver"
+              data-cy="approver"
+              name="approver"
+              formControlName="approver"
+              [compareWith]="compareUser"
+            >
+              <option [ngValue]="null"></option>
+              @for (userOption of usersSharedCollection; track $index) {
+                <option [ngValue]="userOption">{{ userOption.login }}</option>
+              }
+            </select>
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" [disabled]="!canSave || isSaving" class="btn btn-primary">
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
